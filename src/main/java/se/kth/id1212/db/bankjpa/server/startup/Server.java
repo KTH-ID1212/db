@@ -7,7 +7,6 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import se.kth.id1212.db.bankjpa.common.Bank;
 import se.kth.id1212.db.bankjpa.server.controller.Controller;
-import se.kth.id1212.db.bankjpa.server.integration.BankDBException;
 
 /**
  * Starts the bank server.
@@ -25,12 +24,12 @@ public class Server {
             server.parseCommandLineArgs(args);
             server.startRMIServant();
             System.out.println("Bank server started.");
-        } catch (RemoteException | MalformedURLException | BankDBException e) {
+        } catch (RemoteException | MalformedURLException e) {
             System.out.println("Failed to start bank server.");
         }
     }
 
-    private void startRMIServant() throws RemoteException, MalformedURLException, BankDBException {
+    private void startRMIServant() throws RemoteException, MalformedURLException {
         try {
             LocateRegistry.getRegistry().list();
         } catch (RemoteException noRegistryRunning) {
