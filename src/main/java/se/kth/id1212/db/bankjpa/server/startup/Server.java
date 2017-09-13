@@ -1,13 +1,13 @@
-package se.kth.id1212.db.bankjdbc.server.startup;
+package se.kth.id1212.db.bankjpa.server.startup;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import se.kth.id1212.db.bankjdbc.common.Bank;
-import se.kth.id1212.db.bankjdbc.server.controller.Controller;
-import se.kth.id1212.db.bankjdbc.server.integration.BankDBException;
+import se.kth.id1212.db.bankjpa.common.Bank;
+import se.kth.id1212.db.bankjpa.server.controller.Controller;
+import se.kth.id1212.db.bankjpa.server.integration.BankDBException;
 
 /**
  * Starts the bank server.

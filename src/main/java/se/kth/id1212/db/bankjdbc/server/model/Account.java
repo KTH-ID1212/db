@@ -113,6 +113,7 @@ public class Account implements AccountDTO {
     /**
      * @return A string representation of all fields in this object.
      */
+    @Override
     public String toString() {
         StringBuilder stringRepresentation = new StringBuilder();
         stringRepresentation.append("Account: [");
