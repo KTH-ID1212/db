@@ -50,7 +50,7 @@ public class BankDAO {
      *         such account.
      * @throws BankDBException If failed to search for account.
      */
-    public AccountDTO findAccountByName(String holderName) throws BankDBException {
+    public Account findAccountByName(String holderName) throws BankDBException {
         String failureMsg = "Could not search for specified account.";
         ResultSet result = null;
         try {
@@ -77,9 +77,9 @@ public class BankDAO {
      * @return A list with all existing accounts. The list is empty if there are no accounts.
      * @throws BankDBException If failed to search for account.
      */
-    public List<AccountDTO> findAllAccounts() throws BankDBException {
+    public List<Account> findAllAccounts() throws BankDBException {
         String failureMsg = "Could not list accounts.";
-        List<AccountDTO> accounts = new ArrayList<>();
+        List<Account> accounts = new ArrayList<>();
         try (ResultSet result = findAllAccountsStmt.executeQuery()) {
             for (; result.next();) {
                 accounts.add(new Account(result.getString(HOLDER_COLUMN_NAME), result.getInt(

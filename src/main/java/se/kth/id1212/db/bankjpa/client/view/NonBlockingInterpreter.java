@@ -25,8 +25,8 @@ package se.kth.id1212.db.bankjpa.client.view;
 
 import java.util.List;
 import java.util.Scanner;
-import se.kth.id1212.db.bankjdbc.common.Bank;
-import se.kth.id1212.db.bankjdbc.common.AccountDTO;
+import se.kth.id1212.db.bankjpa.common.AccountDTO;
+import se.kth.id1212.db.bankjpa.common.Bank;
 
 /**
  * Reads and interprets user commands. The command interpreter will run in a separate thread, which
@@ -86,7 +86,7 @@ public class NonBlockingInterpreter implements Runnable {
                         bank.deleteAccount(acct);
                         break;
                     case LIST:
-                        List<AccountDTO> accounts = bank.listAccounts();
+                        List<? extends AccountDTO> accounts = bank.listAccounts();
                         for (AccountDTO account : accounts) {
                             outMgr.println(account.getHolderName() + ": " + account.getBalance());
                         }

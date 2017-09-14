@@ -1,12 +1,12 @@
 package se.kth.id1212.db.bankjpa.server.integration;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
-import se.kth.id1212.db.bankjdbc.server.integration.BankDBException;
 import se.kth.id1212.db.bankjpa.server.model.Account;
 import se.kth.id1212.db.bankjpa.common.AccountDTO;
 
@@ -15,7 +15,8 @@ import se.kth.id1212.db.bankjpa.common.AccountDTO;
  * outside this class shall have any knowledge about the database.
  */
 public class BankDAO {
-    private EntityManagerFactory emFactory;
+    private final EntityManagerFactory emFactory;
+    private final ThreadLocal<EntityManager> threadLocalEntityManager = new ThreadLocal<>();
 
     /**
      * Constructs a new DAO object connected to the specified database.
@@ -31,27 +32,33 @@ public class BankDAO {
     /**
      * Searches for an account whose holder has the specified name.
      *
-     * @param holderName The account holder's name
+     * @param holderName                   The account holder's name
+     * @param endTransactionAfterSearching Whether the transaction should commit after searching for
+     *                                     an account with the specified holder. Set to
+     *                                     <code>true</code> if no further action is taken on the
+     *                                     account. Set to <code>false</code> if more operations,
+     *                                     for example deposit or withdraw, are to be performed on
+     *                                     the found account.
      * @return The account whose holder has the specified name, or <code>null</code> if there is no
      *         such account.
-     * @throws BankDBException If failed to search for account.
      */
-    public AccountDTO findAccountByName(String holderName) {
+    public Account findAccountByName(String holderName, boolean endTransactionAfterSearching) {
         if (holderName == null) {
             return null;
         }
 
-        EntityManager em = null;
         try {
-            em = beginTransaction();
+            EntityManager em = beginTransaction();
             try {
-                return (Account) em.createNamedQuery("findAccountByName").
-                        setParameter("ownerName", holderName).getSingleResult();
+                return (Account) em.createNamedQuery("findAccountByName", Account.class).
+                        setParameter("holderName", holderName).getSingleResult();
             } catch (NoResultException noSuchAccount) {
                 return null;
             }
         } finally {
-            commitTransaction(em);
+            if (endTransactionAfterSearching) {
+                commitTransaction();
+            }
         }
     }
 
@@ -59,19 +66,17 @@ public class BankDAO {
      * Retrieves all existing accounts.
      *
      * @return A list with all existing accounts. The list is empty if there are no accounts.
-     * @throws BankDBException If failed to search for account.
      */
-    public List<AccountDTO> findAllAccounts() {
-        EntityManager em = null;
+    public List<Account> findAllAccounts() {
         try {
-            em = beginTransaction();
+            EntityManager em = beginTransaction();
             try {
-                return em.createNamedQuery("findAllAccounts").getResultList();
+                return em.createNamedQuery("findAllAccounts", Account.class).getResultList();
             } catch (NoResultException noSuchAccount) {
-                return null;
+                return new ArrayList<>();
             }
         } finally {
-            commitTransaction(em);
+            commitTransaction();
         }
     }
 
@@ -79,15 +84,27 @@ public class BankDAO {
      * Creates a new account.
      *
      * @param account The account to create.
-     * @throws BankDBException If failed to create the specified account.
      */
     public void createAccount(AccountDTO account) {
-        EntityManager em = null;
         try {
-            em = beginTransaction();
+            EntityManager em = beginTransaction();
             em.persist(account);
         } finally {
-            commitTransaction(em);
+            commitTransaction();
+        }
+    }
+
+    /**
+     * Stores the state of the specified.
+     *
+     * @param account The account to update. All fields are stored in the database.
+     */
+    public void updateAccount(AccountDTO account) {
+        try {
+            EntityManager em = beginTransaction();
+            em.merge(account);
+        } finally {
+            commitTransaction();
         }
     }
 
@@ -97,36 +114,27 @@ public class BankDAO {
      * @param account The account to delete.
      * @return <code>true</code> if the specified holder had an account and it was deleted,
      *         <code>false</code> if the holder did not have an account and nothing was done.
-     * @throws BankDBException If unable to delete the specified account.
      */
     public void deleteAccount(AccountDTO account) {
-        EntityManager em = null;
         try {
-            em = beginTransaction();
-            em.remove(account);
+            EntityManager em = beginTransaction();
+            em.remove(em.merge(account));
         } finally {
-            commitTransaction(em);
+            commitTransaction();
         }
     }
 
-    /**
-     * Starts a new transaction.
-     *
-     * @return The <code>EntityManager</code> used in the newly started transaction.
-     */
-    public EntityManager beginTransaction() {
+    private EntityManager beginTransaction() {
         EntityManager em = emFactory.createEntityManager();
+        threadLocalEntityManager.set(em);
         EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
+        if (!transaction.isActive()) {
+            transaction.begin();
+        }
         return em;
     }
 
-    /**
-     * Commits a transaction.
-     *
-     * @param The <code>EntityManager</code> used in the transaction that shall be committed.
-     */
-    public void commitTransaction(EntityManager em) {
-        em.getTransaction().commit();
+    private void commitTransaction() {
+        threadLocalEntityManager.get().getTransaction().commit();
     }
 }

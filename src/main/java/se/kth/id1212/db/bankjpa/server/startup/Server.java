@@ -12,11 +12,8 @@ import se.kth.id1212.db.bankjpa.server.controller.Controller;
  * Starts the bank server.
  */
 public class Server {
-    private static final String USAGE = "java bankjdbc.Server [bank name in rmi registry] "
-                                        + "[bank database name] [dbms: derby or mysql]";
+    private static final String USAGE = "java bankjpa.Server [bank name in rmi registry]";
     private String bankName = Bank.BANK_NAME_IN_REGISTRY;
-    private String datasource = "Bank";
-    private String dbms = "derby";
 
     public static void main(String[] args) {
         try {
@@ -35,26 +32,18 @@ public class Server {
         } catch (RemoteException noRegistryRunning) {
             LocateRegistry.createRegistry(Registry.REGISTRY_PORT);
         }
-        Controller contr = new Controller(datasource, dbms);
+        Controller contr = new Controller();
         Naming.rebind(bankName, contr);
     }
 
     private void parseCommandLineArgs(String[] args) {
-        if (args.length > 3 || (args.length > 0 && args[0].equalsIgnoreCase("-h"))) {
+        if (args.length > 1 || (args.length > 0 && args[0].equalsIgnoreCase("-h"))) {
             System.out.println(USAGE);
             System.exit(1);
         }
 
         if (args.length > 0) {
             bankName = args[0];
-        }
-
-        if (args.length > 1) {
-            datasource = args[1];
-        }
-
-        if (args.length > 2) {
-            dbms = args[2];
         }
     }
 }

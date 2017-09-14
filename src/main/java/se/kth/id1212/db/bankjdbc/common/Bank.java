@@ -54,7 +54,7 @@ public interface Bank extends Remote {
      * @throws RemoteException  If unable to complete the RMI call.
      * @throws AccountException If unable to list accounts.
      */
-    public List<AccountDTO> listAccounts() throws RemoteException, AccountException;
+    public List<? extends AccountDTO> listAccounts() throws RemoteException, AccountException;
 
     /**
      * Deposits the specified amount to the specified account.

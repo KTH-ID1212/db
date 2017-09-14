@@ -15,22 +15,27 @@ import javax.persistence.Version;
 import se.kth.id1212.db.bankjpa.common.AccountDTO;
 
 @NamedQueries({
+    @NamedQuery(
+            name = "deleteAccountByName",
+            query = "DELETE FROM Account acct WHERE acct.holder.name LIKE :holderName"
+    )
+    ,
         @NamedQuery(
-                name = "deleteAccountByName",
-                query = "DELETE FROM Account acct WHERE acct.holder.name LIKE :ownerName"
-        ),
+            name = "findAccountByName",
+            query = "SELECT acct FROM Account acct WHERE acct.holder.name LIKE :holderName",
+            lockMode = LockModeType.OPTIMISTIC
+    )
+    ,
         @NamedQuery(
-                name = "findAccountByName",
-                query = "SELECT acct FROM Account acct WHERE acct.holder.name LIKE :ownerName",
-                lockMode = LockModeType.OPTIMISTIC
-        ),
-        @NamedQuery(
-                name = "findAllAccounts",
-                query = "SELECT acct FROM Account",
-                lockMode = LockModeType.OPTIMISTIC
-        )
+            name = "findAllAccounts",
+            query = "SELECT acct FROM Account acct",
+            lockMode = LockModeType.OPTIMISTIC
+    )
 })
 
+/**
+ * An account in the bank.
+ */
 @Entity(name = "Account")
 public class Account implements AccountDTO {
     @Id
@@ -49,24 +54,56 @@ public class Account implements AccountDTO {
     @Column(name = "OPTLOCK")
     private int versionNum;
 
+    /**
+     * Creates an instance without holder and with the balance zero. A public no-arg constructor is
+     * required by JPA.
+     */
     public Account() {
         this(null, 0);
     }
 
+    /**
+     * Creates an instance with the specified holder and the balance zero.
+     *
+     * @param holder The holder of the newly created instance.
+     */
     public Account(Holder holder) {
         this(holder, 0);
     }
 
+    /**
+     * Creates an instance with the specified holder and balance.
+     *
+     * @param holder  The holder of the newly created instance.
+     * @param balance The balance of the newly created instance.
+     */
     public Account(Holder holder, int balance) {
         this.holder = holder;
         this.balance = balance;
     }
 
+    /**
+     * @return The balance of this account.
+     */
     @Override
     public int getBalance() {
         return balance;
     }
 
+    /**
+     * @return The name of this account's holder.
+     */
+    @Override
+    public String getHolderName() {
+        return holder.getName();
+    }
+
+    /**
+     * Deposits the specified amount to this account.
+     *
+     * @param amount The amount to deposit.
+     * @throws RejectedException If trying to deposit a negative amount.
+     */
     public void deposit(int amount) throws RejectedException {
         if (amount < 0) {
             throw new RejectedException(
@@ -75,6 +112,13 @@ public class Account implements AccountDTO {
         balance += amount;
     }
 
+    /**
+     * Withdraws the specified amount from this account.
+     *
+     * @param amount The amount to withdraw.
+     * @throws RejectedException If trying to withdraw a negative amount or an amount greater than
+     *                           the balance.
+     */
     public void withdraw(int amount) throws RejectedException {
         if (amount < 0) {
             throw new RejectedException(
@@ -104,10 +148,5 @@ public class Account implements AccountDTO {
         stringRepresentation.append(balance);
         stringRepresentation.append("]");
         return stringRepresentation.toString();
-    }
-
-    @Override
-    public String getHolderName() {
-        return holder.getName();
     }
 }

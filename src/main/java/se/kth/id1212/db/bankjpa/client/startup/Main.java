@@ -27,8 +27,8 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import se.kth.id1212.db.bankjdbc.client.view.NonBlockingInterpreter;
-import se.kth.id1212.db.bankjdbc.common.Bank;
+import se.kth.id1212.db.bankjpa.client.view.NonBlockingInterpreter;
+import se.kth.id1212.db.bankjpa.common.Bank;
 
 /**
  * Starts the chat client.
@@ -42,7 +42,7 @@ public class Main {
             Bank bank = (Bank) Naming.lookup(Bank.BANK_NAME_IN_REGISTRY);
             new NonBlockingInterpreter().start(bank);
         } catch (NotBoundException | MalformedURLException | RemoteException ex) {
-            System.out.println("Could not start chat client.");
+            System.out.println("Could not start bank client.");
         }
     }
 }

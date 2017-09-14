@@ -24,7 +24,7 @@ public class Controller extends UnicastRemoteObject implements Bank {
     }
 
     @Override
-    public synchronized List<AccountDTO> listAccounts() throws AccountException {
+    public synchronized List<? extends AccountDTO> listAccounts() throws AccountException {
         try {
             return bankDb.findAllAccounts();
         } catch (Exception e) {

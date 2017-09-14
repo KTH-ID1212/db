@@ -133,6 +133,9 @@ class CmdLine {
     }
 
     private String removeCmd(String enteredLine) {
+        if (cmd == Command.ILLEGAL_COMMAND) {
+            return enteredLine;
+        }
         int indexAfterCmd = enteredLine.toUpperCase().indexOf(cmd.name()) + cmd.name().length();
         String withoutCmd = enteredLine.substring(indexAfterCmd, enteredLine.length());
         return withoutCmd.trim();

@@ -86,7 +86,7 @@ public class NonBlockingInterpreter implements Runnable {
                         bank.deleteAccount(acct);
                         break;
                     case LIST:
-                        List<AccountDTO> accounts = bank.listAccounts();
+                        List<? extends AccountDTO> accounts = bank.listAccounts();
                         for (AccountDTO account : accounts) {
                             outMgr.println(account.getHolderName() + ": " + account.getBalance());
                         }

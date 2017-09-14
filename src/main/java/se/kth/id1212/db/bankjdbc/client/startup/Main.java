@@ -42,7 +42,7 @@ public class Main {
             Bank bank = (Bank) Naming.lookup(Bank.BANK_NAME_IN_REGISTRY);
             new NonBlockingInterpreter().start(bank);
         } catch (NotBoundException | MalformedURLException | RemoteException ex) {
-            System.out.println("Could not start chat client.");
+            System.out.println("Could not start bank client.");
         }
     }
 }
