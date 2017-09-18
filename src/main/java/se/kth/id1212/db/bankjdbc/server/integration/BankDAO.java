@@ -81,7 +81,7 @@ public class BankDAO {
         String failureMsg = "Could not list accounts.";
         List<Account> accounts = new ArrayList<>();
         try (ResultSet result = findAllAccountsStmt.executeQuery()) {
-            for (; result.next();) {
+            while (result.next()) {
                 accounts.add(new Account(result.getString(HOLDER_COLUMN_NAME), result.getInt(
                                          BALANCE_COLUMN_NAME)));
             }

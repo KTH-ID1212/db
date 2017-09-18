@@ -2,7 +2,6 @@ package se.kth.id1212.db.bankjdbc.server.model;
 
 import se.kth.id1212.db.bankjdbc.common.AccountDTO;
 import se.kth.id1212.db.bankjdbc.server.integration.BankDAO;
-import se.kth.id1212.db.bankjdbc.server.integration.BankDBException;
 
 /**
  * An account in the bank.

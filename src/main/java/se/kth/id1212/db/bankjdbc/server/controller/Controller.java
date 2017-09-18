@@ -69,13 +69,13 @@ public class Controller extends UnicastRemoteObject implements Bank {
     }
 
     @Override
-    public void deposit(AccountDTO acctDTO, int amt) throws RejectedException, AccountException {
+    public synchronized void deposit(AccountDTO acctDTO, int amt) throws RejectedException, AccountException {
         Account acct = (Account) getAccount(acctDTO.getHolderName());
         acct.deposit(amt);
     }
 
     @Override
-    public void withdraw(AccountDTO acctDTO, int amt) throws RejectedException, AccountException {
+    public synchronized void withdraw(AccountDTO acctDTO, int amt) throws RejectedException, AccountException {
         Account acct = (Account) getAccount(acctDTO.getHolderName());
         acct.withdraw(amt);
     }

@@ -3,7 +3,7 @@ package se.kth.id1212.db.bankjdbc.common;
 import java.io.Serializable;
 
 /**
- * Specifies a read-only view of n account.
+ * Specifies a read-only view of an account.
  */
 public interface AccountDTO extends Serializable {
     /**
