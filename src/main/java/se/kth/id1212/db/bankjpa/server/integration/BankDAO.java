@@ -102,14 +102,15 @@ public class BankDAO {
     /**
      * Deletes the specified account.
      *
-     * @param account The account to delete.
+     * @param holderName The holder of the account to delete.
      * @return <code>true</code> if the specified holder had an account and it was deleted,
      *         <code>false</code> if the holder did not have an account and nothing was done.
      */
-    public void deleteAccount(AccountDTO account) {
+    public void deleteAccount(String holderName) {
         try {
             EntityManager em = beginTransaction();
-            em.remove(em.merge(account));
+            em.createNamedQuery("deleteAccountByName", Account.class).
+                    setParameter("holderName", holderName).executeUpdate();
         } finally {
             commitTransaction();
         }
