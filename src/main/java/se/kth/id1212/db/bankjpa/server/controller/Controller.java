@@ -54,11 +54,12 @@ public class Controller extends UnicastRemoteObject implements Bank {
     }
 
     @Override
-    public void deleteAccount(AccountDTO account) throws AccountException {
+    public void deleteAccount(String holderName) throws AccountException {
         try {
+            Account account = bankDb.findAccountByName(holderName, false);
             bankDb.deleteAccount(account);
         } catch (Exception e) {
-            throw new AccountException("Could not delete account: " + account, e);
+            throw new AccountException("Could not delete account for: " + holderName, e);
         }
     }
 

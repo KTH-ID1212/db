@@ -82,8 +82,7 @@ public class NonBlockingInterpreter implements Runnable {
                         ;
                         break;
                     case DELETE:
-                        acct = bank.getAccount(cmdLine.getParameter(0));
-                        bank.deleteAccount(acct);
+                        bank.deleteAccount(cmdLine.getParameter(0));
                         break;
                     case LIST:
                         List<? extends AccountDTO> accounts = bank.listAccounts();

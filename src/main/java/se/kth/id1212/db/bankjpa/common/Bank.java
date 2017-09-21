@@ -40,12 +40,12 @@ public interface Bank extends Remote {
      * Deletes the specified account, if there is such an account. If there is no
      * such account, nothing happens.
      *
-     * @param account The account to delete.
+     * @param holderName The holder of the account to delete.
      * @throws RemoteException  If unable to complete the RMI call.
      * @throws AccountException If unable to delete account, or unable to check if there was an
      *                          account to delete.
      */
-    public void deleteAccount(AccountDTO account) throws RemoteException, AccountException;
+    public void deleteAccount(String holderName) throws RemoteException, AccountException;
 
     /**
      * Lists all accounts in the bank.
