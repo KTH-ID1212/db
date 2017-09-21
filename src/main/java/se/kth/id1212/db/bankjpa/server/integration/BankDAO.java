@@ -46,7 +46,7 @@ public class BankDAO {
         try {
             EntityManager em = beginTransaction();
             try {
-                return (Account) em.createNamedQuery("findAccountByName", Account.class).
+                return em.createNamedQuery("findAccountByName", Account.class).
                         setParameter("holderName", holderName).getSingleResult();
             } catch (NoResultException noSuchAccount) {
                 return null;
@@ -96,12 +96,7 @@ public class BankDAO {
      * @param account The account to update. All fields are stored in the database.
      */
     public void updateAccount(AccountDTO account) {
-        try {
-            EntityManager em = beginTransaction();
-            em.merge(account);
-        } finally {
-            commitTransaction();
-        }
+        commitTransaction();
     }
 
     /**
