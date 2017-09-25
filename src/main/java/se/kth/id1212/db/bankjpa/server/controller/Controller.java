@@ -68,7 +68,7 @@ public class Controller extends UnicastRemoteObject implements Bank {
         try {
             acct = bankDb.findAccountByName(acctDTO.getHolderName(), false);
             acct.deposit(amt);
-            bankDb.updateAccount(acct);
+            bankDb.updateAccount();
         } catch (Exception e) {
             throw new AccountException("Could not deposit to account: " + acct, e);
         }
@@ -80,7 +80,7 @@ public class Controller extends UnicastRemoteObject implements Bank {
         try {
             acct = bankDb.findAccountByName(acctDTO.getHolderName(), false);
             acct.withdraw(amt);
-            bankDb.updateAccount(acct);
+            bankDb.updateAccount();
         } catch (Exception e) {
             throw new AccountException("Could not withdraw from account: " + acct, e);
         }

@@ -91,11 +91,9 @@ public class BankDAO {
     }
 
     /**
-     * Stores the state of the specified.
-     *
-     * @param account The account to update. All fields are stored in the database.
+     * Persists the state of all entity instances used in the current transaction.
      */
-    public void updateAccount(AccountDTO account) {
+    public void updateAccount() {
         commitTransaction();
     }
 
